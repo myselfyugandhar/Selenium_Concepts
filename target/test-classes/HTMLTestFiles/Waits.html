@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Waits Practice Page</title>
+    <style>
+        #fluentButton {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            display: block;           /* Force block display */
+            margin-top: 20px;         /* Space between buttons */
+        }
+    </style>
+    <script>
+        // Add Imp/Exp Button after 15 seconds dynamically
+        setTimeout(function() {
+            var btn = document.createElement('button');
+            btn.id = 'impExpButton';
+            btn.textContent = 'Imp/Exp Button (Appears after 15s)';
+            btn.style.display = 'block';             // Force block display
+            btn.style.marginTop = '20px';            // Add margin
+            document.getElementById('buttonContainer').appendChild(btn);
+        }, 15000);
+
+        // Start blinking the Fluent Wait Button
+        function startFluentBlink() {
+            const fluentBtn = document.getElementById('fluentButton');
+            let visible = true;
+            setInterval(() => {
+                fluentBtn.style.display = visible ? 'none' : 'inline-block';
+                visible = !visible;
+            }, 1000);
+        }
+
+        window.onload = startFluentBlink;
+    </script>
+</head>
+<body>
+    <h2>Waits Practice - Implicit, Fluent Wait</h2>
+
+    <!-- Container for Imp/Exp Button (added dynamically) -->
+    <div id="buttonContainer"></div>
+
+    <!-- Fluent Wait Button -->
+    <button id="fluentButton">Fluent Button (Blinks every 1s)</button>
+</body>
+</html>

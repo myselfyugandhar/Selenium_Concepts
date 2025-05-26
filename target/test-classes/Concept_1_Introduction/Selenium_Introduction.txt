@@ -1,0 +1,151 @@
+=========================================================
+1. Selenium Core (2004)
+=========================================================
+
+-> JavaScript library & Test tables/scripts are  injected into the web app’s HTML to control browsers.
+-> Limited by browser security restrictions (same-origin policy)
+
+Example snippet:
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="selenium-core/scripts/selenium-api.js"></script>
+</head>
+<body>
+  <table>
+    <tr><td>open</td><td>/login.html</td></tr>
+    <tr><td>type</td><td>id=username</td><td>user1</td></tr>
+    <tr><td>type</td><td>id=password</td><td>pass1</td></tr>
+    <tr><td>clickAndWait</td><td>id=loginButton</td></tr>
+  </table>
+</body>
+</html>
+
+=========================================================
+2. Selenium RC (Remote Control) (2005)
+=========================================================
+
+-> Selenium Core runs on a remote server which acts as a middleman that injects scripts dynamically into browsers
+-> Tests written in programming languages like Java, Python, C#
+-> Allowed automation on multiple browsers without modifying the app
+
+Example snippet:
+DefaultSelenium selenium = new DefaultSelenium("localhost", 4444, "*firefox", "http://example.com");
+selenium.start();
+selenium.open("/login.html");
+selenium.type("id=username", "user1");
+selenium.type("id=password", "pass1");
+selenium.click("id=loginButton");
+selenium.stop();
+
+=========================================================
+3. Selenium 2.0 / WebDriver (2011)
+=========================================================
+
+-> New WebDriver API controls browsers natively without JavaScript injection
+-> Faster, more reliable, supports modern browsers directly
+
+Example: 
+WebDriver driver = new FirefoxDriver();
+driver.get("http://example.com/login.html");
+driver.findElement(By.id("username")).sendKeys("user1");
+driver.findElement(By.id("password")).sendKeys("pass1");
+driver.findElement(By.id("loginButton")).click();
+driver.quit();
+
+=========================================================
+4. Selenium 3.0 (2016)
+=========================================================
+
+-> Deprecated Selenium RC completely, fully focused on WebDriver
+
+=========================================================
+5. Selenium 4.0 (2021)
+=========================================================
+
+-> Selenium and different browser teams collaborated with the W3C(World Wide Web Consortium) to create an open standard — a specification for browser automation, which they called the WebDriver protocol for better browser compatibility.
+(Before the W3C protocol, Selenium and browsers relied on custom, non-standard protocols like the JSON Wire Protocol, which led to inconsistency and maintenance challenges as each browser has its own protocol.)
+-> New features: Relative Locators, better Grid UI.
+
+Example:
+WebDriver driver = new ChromeDriver();
+driver.get("http://example.com/login.html");
+WebElement password = driver.findElement(By.id("password"));
+WebElement username = driver.findElement(with(By.tagName("input")).above(password));
+username.sendKeys("user1");
+driver.findElement(By.id("loginButton")).click();
+driver.quit();
+
+=========================================================
+6. Selenium Grid (since ~2008, improved in Selenium 4)
+=========================================================
+
+-> Runs tests on multiple browsers(cross browsers) and machines in parallel
+-> Uses a Hub that controls multiple Nodes (machines with browsers). Tests connect remotely to the Hub URL, which distributes the test to nodes
+
+Example : Parallel execution on Grid (Chrome + Firefox in parallel threads)
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ParallelGridTest {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        Runnable chromeTest = () -> {
+            try {
+                DesiredCapabilities caps = new DesiredCapabilities();
+                caps.setBrowserName("chrome");
+                WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), caps);
+                driver.get("https://www.example.com");
+                System.out.println("Chrome Title: " + driver.getTitle());
+                driver.quit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        Runnable firefoxTest = () -> {
+            try {
+                DesiredCapabilities caps = new DesiredCapabilities();
+                caps.setBrowserName("firefox");
+                WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), caps);
+                driver.get("https://www.example.com");
+                System.out.println("Firefox Title: " + driver.getTitle());
+                driver.quit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        executor.submit(chromeTest);
+        executor.submit(firefoxTest);
+        executor.shutdown();
+    }
+}
+
+=========================================================
+7. Selenium IDE (Browser Plugin for Record & Playback)
+=========================================================
+
+-> Record user actions in the browser via selenium ide plugin
+-> Can export recorded tests as Selenium WebDriver code in many languages
+
+Example: Recorded test steps in Selenium IDE
+open      | /login.html         |            # Opens login page
+type      | id=username         | user1      # Enters username
+type      | id=password         | pass1      # Enters password
+click     | id=loginButton      |            # Clicks login button
+assertText| id=welcomeMessage   | Welcome!   # Checks welcome message
+
+*Exported Java WebDriver code from Selenium IDE
+WebDriver driver = new FirefoxDriver();
+driver.get("http://example.com/login.html");
+driver.findElement(By.id("username")).sendKeys("user1");
+driver.findElement(By.id("password")).sendKeys("pass1");
+driver.findElement(By.id("loginButton")).click();
+driver.quit();
+
